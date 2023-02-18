@@ -12,6 +12,7 @@ import {
 } from "chart.js";
 import { Pie, Bar } from "react-chartjs-2";
 import React from "react";
+import moment from "moment";
 
 ChartJS.register(
   ArcElement,
@@ -72,8 +73,11 @@ export default function Home() {
   const [mostEmoji, setMostEmoji] = useState();
   const [emojiCount, setEmojiCount] = useState();
 
+  const [mostDay, setMostDay] = useState("");
+  const [mostDayNo, setMostDayNo] = useState(0);
+
   const [dataEmoji, setDataEmoji] = useState({
-    labels: ["sdhvbsd", "dsvsdv","dscvsd"],
+    labels: ["sdhvbsd", "dsvsdv", "dscvsd"],
     datasets: [
       {
         data: [111, 111, 222],
@@ -86,33 +90,97 @@ export default function Home() {
     ],
   });
 
+  const [dataDay, setDataDay] = useState({
+    labels: ["dayName", "sdvds"],
+    datasets: [
+      {
+        data: [2, 3],
+        backgroundColor: generateColors(7),
+      },
+    ],
+  });
 
-  const timeBarOptions:any = {
-    indexAxis: "y",
-    elements: {
-      bar: {
-        borderWidth: 2,
-      },
-    },
+  const optionsDay: any = {
     responsive: true,
-    plugins: {
-      legend: {
-        position: "right",
-      },
-      title: {
-        display: true,
-        text: "Chart.js Horizontal Bar Chart",
-      },
+    maintainAspectRatio: false,
+    scales: {
+      yAxes: [
+        {
+          ticks: {
+            beginAtZero: true,
+          },
+        },
+      ],
     },
   };
- 
-  const emojiotions:any = {
+
+  const timeBarOptions: any = {
+    indexAxis: "y",
+  
+      tooltips: {
+        enabled: false
+      },
       responsive: true,
-      maintainAspectRatio: false,
-      scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
-    }
+      legend: {
+         display: false,
+         position: 'bottom',
+         fullWidth: true,
+         labels: {
+           boxWidth: 10,
+           padding: 50
+         }
+      },
+      scales: {
+         yAxes: [{
+           barPercentage: 0.75,
+           gridLines: {
+             display: true,
+             drawTicks: true,
+             drawOnChartArea: false
+           },
+           ticks: {
+             fontColor: '#555759',
+             fontFamily: 'Lato',
+             fontSize: 11
+           }
+            
+         }],
+         xAxes: [{
+             gridLines: {
+               display: true,
+               drawTicks: false,
+               tickMarkLength: 5,
+               drawBorder: false
+             },
+           ticks: {
+             padding: 5,
+             beginAtZero: true,
+             fontColor: '#555759',
+             fontFamily: 'Lato',
+             fontSize: 11,
+               
+           },
+            scaleLabel: {
+              display: true,
+              padding: 10,
+              fontFamily: 'Lato',
+              fontColor: '#555759',
+              fontSize: 16,
+              fontStyle: 700,
+              labelString: 'Scale Label'
+            },
+           
+         }]
+      }
+   };
+
+  const emojiotions: any = {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
+  };
   function generateColors(n: number) {
-    var bgColor:any = [];
+    var bgColor: any = [];
     var r: number, g: number, b: number;
     for (let i = 0; i < Number(n); i += 1) {
       r = Math.floor(Math.random() * 255);
@@ -164,9 +232,12 @@ export default function Home() {
     });
   }
 
-  function plotSenderGraph(count: { [x: string]: number; hasOwnProperty?: any; }) {
-    var senderName:any = [];
-    var senderCount:any = [];
+  function plotSenderGraph(count: {
+    [x: string]: number;
+    hasOwnProperty?: any;
+  }) {
+    var senderName: any = [];
+    var senderCount: any = [];
     var total = 0;
     for (var key in count) {
       if (count.hasOwnProperty(key)) {
@@ -194,29 +265,29 @@ export default function Home() {
     });
   }
 
-  function plotEmojiGraph(countEmoji:any) {
-  var counter = [];
-  var emoji:any = [];
-  var count:any = [];
-  for (var key in countEmoji) {
-    if (countEmoji.hasOwnProperty(key)) {
-      counter.push({ emoji: key, value: countEmoji[key] });
+  function plotEmojiGraph(countEmoji: any) {
+    var counter = [];
+    var emoji: any = [];
+    var count: any = [];
+    for (var key in countEmoji) {
+      if (countEmoji.hasOwnProperty(key)) {
+        counter.push({ emoji: key, value: countEmoji[key] });
+      }
     }
-  }
-  counter.sort(function (a, b) {
-    return b.value - a.value;
-  });
-  if (counter.length > 5) {
-    counter = counter.splice(0, 5);
-  }
-  counter.forEach((element) => {
-    emoji.push(element.emoji);
-    count.push(element.value);
-  });
-  var i = count.indexOf(Math.max(...count));
-  setMostEmoji(emoji[i]);
-  setEmojiCount(count[i]);
-  setDataEmoji({
+    counter.sort(function (a, b) {
+      return b.value - a.value;
+    });
+    if (counter.length > 5) {
+      counter = counter.splice(0, 5);
+    }
+    counter.forEach((element) => {
+      emoji.push(element.emoji);
+      count.push(element.value);
+    });
+    var i = count.indexOf(Math.max(...count));
+    setMostEmoji(emoji[i]);
+    setEmojiCount(count[i]);
+    setDataEmoji({
       labels: emoji,
       datasets: [
         {
@@ -224,41 +295,62 @@ export default function Home() {
           backgroundColor: generateColors(24),
         },
       ],
-    })
-  // var emojiText:any = document.getElementById("emojiText");
-  // emojiText.innerHTML =
-  //   '<div class="high">' + emoji[i] + "</div> Was Sent " + count[i] + " Times";
-  // var ctx = document.getElementById("emojiChart").getContext("2d");
-  // var myChart = new Chart(ctx, {
-  //   type: "bar",
-  //   data: {
-  //     labels: emoji,
-  //     datasets: [
-  //       {
-  //         label: "# of Emoji",
-  //         data: count,
-  //         backgroundColor: generateColors(emoji.length),
-  //       },
-  //     ],
-  //   },
-  //   options: {
-  //     responsive: true,
-  //     maintainAspectRatio: false,
-  //     scales: { yAxes: [{ ticks: { beginAtZero: true } }] },
-  //   },
-  // });
-}
+    });
+  }
+
+  function plotDayGraph(date: any) {
+    var day = [0, 0, 0, 0, 0, 0, 0];
+    var dayName = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    date.forEach((element: any) => {
+      day[
+        moment(element, [
+          "DD/MM/YYYY",
+          "MM/DD/YYYY",
+          "DD-MM-YYYY",
+          "MM-DD-YYYY",
+          "DD.MM.YYYY",
+          "MM.DD.YYYY",
+          "DD-MM-YY",
+          "MM-DD-YY",
+          "DD.MM.YY",
+          "MM.DD.YY",
+          "DD/MM/YY",
+          "MM/DD/YY",
+        ]).format("e")
+      ] += 1;
+    });
+    var i = day.indexOf(Math.max(...day));
+    setMostDayNo(day[i]);
+    setMostDay(dayName[i]);
+    setDataDay({
+      labels: dayName,
+      datasets: [
+        {
+          data: day,
+          backgroundColor: generateColors(7),
+        },
+      ],
+    });
+  }
 
   function onChangeCallback(event: any) {
     var file = event.target.files[0];
-    var reader:any = new FileReader();
+    var reader: any = new FileReader();
 
-    reader.onload = function (e:any) {
+    reader.onload = function (e: any) {
       var sender = reader.result!.match(/[-\]](\s\w+)+[:]/g);
-      var count:any = {};
-      var countEmoji:any = {};
+      var count: any = {};
+      var countEmoji: any = {};
       var datetime = reader.result.match(/(\d+[\/.]\d+[\/.]\d+)([^-\]]*)/g);
-      var date:any = [];
+      var date: any = [];
       var time = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
       ];
@@ -279,50 +371,55 @@ export default function Home() {
           countEmoji[element] = (countEmoji[element] || 0) + 1;
         });
       }
-      datetime.forEach((element: { match: (arg0: RegExp) => any[]; search: (arg0: RegExp) => number; }) => {
-        try {
-          date.push(element.match(/(\d+[\/.]\d+[\/.]\d+)/g)[0]);
-          if (element.search(/[aA]/) != -1) {
-            time[
-              Number(
-                element
-                  .match(/[-+]?\s\d+:/g)[0]
-                  .replace(":", "")
-                  .replace(" ", "")
-              ) % 12
-            ] += 1;
-          } else if (element.search(/[pP]/) != -1) {
-            time[
-              Number(
-                element
-                  .match(/[-+]?\s\d+:/g)[0]
-                  .replace(":", "")
-                  .replace(" ", "")
-              ) == 12
-                ? 12
-                : Number(
-                    element
-                      .match(/[-+]?\s\d+:/g)[0]
-                      .replace(":", "")
-                      .replace(" ", "")
-                  ) + 12
-            ] += 1;
-          } else {
-            time[
-              Number(
-                element
-                  .match(/[-+]?\s\d+:/g)[0]
-                  .replace(":", "")
-                  .replace(" ", "")
-              )
-            ] += 1;
-          }
-        } catch (TypeError) {}
-      });
+      datetime.forEach(
+        (element: {
+          match: (arg0: RegExp) => any[];
+          search: (arg0: RegExp) => number;
+        }) => {
+          try {
+            date.push(element.match(/(\d+[\/.]\d+[\/.]\d+)/g)[0]);
+            if (element.search(/[aA]/) != -1) {
+              time[
+                Number(
+                  element
+                    .match(/[-+]?\s\d+:/g)[0]
+                    .replace(":", "")
+                    .replace(" ", "")
+                ) % 12
+              ] += 1;
+            } else if (element.search(/[pP]/) != -1) {
+              time[
+                Number(
+                  element
+                    .match(/[-+]?\s\d+:/g)[0]
+                    .replace(":", "")
+                    .replace(" ", "")
+                ) == 12
+                  ? 12
+                  : Number(
+                      element
+                        .match(/[-+]?\s\d+:/g)[0]
+                        .replace(":", "")
+                        .replace(" ", "")
+                    ) + 12
+              ] += 1;
+            } else {
+              time[
+                Number(
+                  element
+                    .match(/[-+]?\s\d+:/g)[0]
+                    .replace(":", "")
+                    .replace(" ", "")
+                )
+              ] += 1;
+            }
+          } catch (TypeError) {}
+        }
+      );
       plotSenderGraph(count);
       plotTimeGraph(time);
-      plotEmojiGraph(countEmoji)
-
+      plotEmojiGraph(countEmoji);
+      plotDayGraph(date);
     };
     setUploaded(true);
 
@@ -331,38 +428,42 @@ export default function Home() {
   return (
     <>
       {uploaded ? (
-        <>
-          <div className="flex flex-col content-center">
+        <div className="mb-14">
+          <div className="flex flex-col content-center mb-5">
             <div className="time-section">
               <div className="time-text">
-                <div>425</div>
-                <div> Messages Were Sent Between 11PM-12AM</div>
                 <Bar options={timeBarOptions} data={dataBarTime} />
               </div>
             </div>
           </div>
-          <div className="other-container flex">
-            <div className="messages-sent flex flex-col  justify-center text-center	">
-              <div className="no-messages ">{totalText}</div>
-              <div>Messages Were Sent</div>
-              <div className="no-sender">{senderText}</div>
-              <div>Messages were sent by {senderName}</div>
-              <div className="self-center">
-                <Pie className="p-9" data={senderData} />
+          <div className="other-container flex  flex-col md:items-end  justify-center space-x-2 md:flex-row">
+            <div className="messages-sent text-center	">
+              <div className="">
+                <Pie  className="p-2" data={senderData} />
+
+                <div className="mt-3 no-sender">{senderText}</div>
+                <div>Messages were sent by {senderName}</div>
               </div>
             </div>
-            <div className="messages-sent flex flex-col  justify-center text-center	">
-              <div className="no-messages ">{totalText}</div>
-              <div>Messages Were Sent</div>
-              <div className="no-sender">{senderText}</div>
-              <div>Messages were sent by {senderName}</div>
-              <div className="self-center">
-                <Bar  data={dataEmoji} options={emojiotions} />
+            <div className="emoji-sent text-center	">
+              <div className="">
+                <Bar data={dataEmoji} options={emojiotions} />
               </div>
+              <div className="mt-3 no-emoji">{mostEmoji}</div>
+              <div>
+                Was Sent
+                {" " + emojiCount + " Times"}
+              </div>
+            </div>
+            <div className="day text-center	">
+              <div className="">
+                <Bar data={dataDay} options={optionsDay} />
+              </div>
+              <div className="mt-3 no-day">{mostDayNo}</div>
+              <div>Messages Were Sent On {mostDay}</div>
             </div>
           </div>
-         
-        </>
+        </div>
       ) : (
         <div className="flex flex-col items-center justify-center main h-screen w-screen ">
           <label
