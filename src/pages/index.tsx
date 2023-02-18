@@ -339,6 +339,8 @@ export default function Home() {
         },
       ],
     });
+    setUploaded(true);
+
   }
 
   function onChangeCallback(event: any) {
@@ -421,14 +423,14 @@ export default function Home() {
       plotEmojiGraph(countEmoji);
       plotDayGraph(date);
     };
-    setUploaded(true);
 
     reader.readAsText(file);
+
   }
   return (
     <>
       {uploaded ? (
-        <div className="mb-14">
+        <div className="mb-14 m-5">
           <div className="flex flex-col content-center mb-5">
             <div className="time-section">
               <div className="time-text">
@@ -474,9 +476,10 @@ export default function Home() {
               className="hidden"
               id="txtfile"
               type="file"
+              accept=".txt"
               onChange={onChangeCallback}
             />
-            <p>Click here to add your image</p>
+            <p>Click here to add your text file</p>
           </label>
         </div>
       )}
