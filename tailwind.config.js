@@ -3,13 +3,15 @@
 const defaultTheme = require("tailwindcss/defaultTheme");
 const {
   default: flattenColorPalette,
-// @ts-ignore
 } = require("tailwindcss/lib/util/flattenColorPalette");
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./{src,app}/**/*.{ts,tsx,jsx}"],
+  content: ["./{src,app}/**/*.{ts,tsx}"],
   theme: {
+    fontFamily: {
+      londrina: ["Londrina Solid", "sans-serif"],
+    },
     extend: {
       colors: {
         blurple: "#5865F2",

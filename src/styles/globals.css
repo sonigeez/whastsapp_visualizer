@@ -1,7 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Londrina+Solid&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    font-family: "Londrina Solid";
+  }
+}
+
 body {
-  @apply bg-grid-neutral-200/40 bg-neutral-100 text-neutral-900 dark:bg-grid-neutral-800/50 dark:bg-neutral-900 dark:text-neutral-100 font-mono font-medium;
+  @apply bg-grid-neutral-200/40 bg-neutral-100 text-neutral-900 dark:bg-grid-neutral-800/50 dark:bg-neutral-900 dark:text-neutral-100 tracking-wide;
 }
